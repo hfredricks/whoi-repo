@@ -19,21 +19,66 @@ Learning ggplot2 after lunch... I'm hungry
 **I'm hungry**
 
 ```{r}
+# install and load tidyverse
+#install.packages("tidyverse")
+#library(tidyverse)
+install.packages("ggplot2")
+install.packages("readr")
+library(ggplot2)
+library(readr)
 #National Parks in California
-ca <- read.csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/ca.csv") 
+ca <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/ca.csv") 
 
 #Acadia National Park
-acadia <- read.csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/acadia.csv")
+acadia <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/acadia.csv")
 
 #Southeast US National Parks
-se <- read.csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/se.csv")
+se <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/se.csv")
 
 #2016 Visitation for all Pacific West National Parks
-visit_16 <- read.csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/visit_16.csv")
+visit_16 <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/visit_16.csv")
 
 #All Nationally designated sites in Massachusetts
-mass <- read.csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/mass.csv")
+mass <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/mass.csv")
 
+
+
+```
+```{r}
+ggplot(data = ca) +
+    geom_point(aes(x = year, y = visitors, color = park_name)) +
+    labs(x = "Year",
+       y = "Visitation",
+       title = "California National Park Visitation") +
+    theme_bw() +
+    theme(legend.title=element_blank())
+```
+```{r}
+ggplot(data = se) +
+    geom_point(aes(x = year, y = visitors, color = state)) +
+    labs(x = "Year",
+       y = "# of visitors",
+       title = "Southeast Region National Park Visitation") +
+    theme_light() +
+    theme(legend.title=element_blank(),
+          axis.text.x = element_text(angle = 60, size = 20, color = "blue"))
+
+```
+```{r}
+ggplot(data = se) +
+  geom_point(aes(x = year, y = visitors, color = park_name)) +
+               facet_wrap( ~ state, scales = "free")
+```
+```{r}
+ggplot(data = se) +
+  geom_jitter(aes(x = park_name, y = visitors), alpha = 0.4, width = 0.1)
+
+
+```
+```{r}
+ggplot(se) + geom_line(aes(x = year, y = visitors, color = park_name))+
+  theme_bw()
+  
 
 ```
 
