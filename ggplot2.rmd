@@ -12,12 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 # Learning ggplot2
 
 
-Learning ggplot2 after lunch... I'm hungry
-
-*I'm hungry*
-
-**I'm hungry**
-
 ```{r}
 # install and load tidyverse
 #install.packages("tidyverse")
@@ -26,6 +20,8 @@ install.packages("ggplot2")
 install.packages("readr")
 library(ggplot2)
 library(readr)
+
+
 #National Parks in California
 ca <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/ca.csv") 
 
@@ -80,5 +76,25 @@ ggplot(se) + geom_line(aes(x = year, y = visitors, color = park_name))+
   theme_bw()
   
 
+```
+```{r}
+ggplot(acadia, aes(x = year, y = visitors)) +
+  geom_point() +
+  geom_line() +
+  geom_smooth() +
+  coord_flip() +
+  theme(legend.position = "none") 
+
+
+```
+```{r}
+myplot <- ggplot(visit_16, aes(x = state, y = visitors, fill = park_name)) +
+  geom_bar(stat = "identity", position = "dodge")
+
+myplot
+
+ggsave(filename = "myplot.png", myplot)
+
+#geom_bar is already running stats, its giving you a count statistic, you can tell it to do something else
 ```
 

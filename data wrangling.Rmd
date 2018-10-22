@@ -1,0 +1,105 @@
+---
+title: "Data wrangling"
+author: "Helen Fredricks"
+date: "October 22, 2018"
+output: html_document
+---
+
+```{r}
+install.packages("readr")
+install.packages("diplyr")
+install.packages("tidyverse")
+library(readr)
+library(diplyr)
+library(tidyverse) 
+
+
+```
+
+
+
+```{r}
+## read gapminder csv. Note the readr:: prefix identifies which package it's in
+gapminder <- readr::read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv')
+```
+```{r}
+filter(gapminder, lifeExp < 29)
+filter(gapminder, country == "Mexico")
+filter(gapminder, country %in% c("Mexico", "Peru", "Brazil"))
+
+```
+```{r}
+# find mean life exp of sweden
+
+sweden <- filter(gapminder, country == "Sweden")
+mean(sweden$lifeExp)
+
+```
+```{r}
+
+#select by columns
+
+select(gapminder, year, lifeExp)
+
+#everything but the columns you name
+select(gapminder, -continent, -lifeExp)
+
+#select and filter together
+gap_cambodia <-filter(gapminder, country == "Cambodia")
+gap_cambodia2 <- select(gap_cambodia, -continent, -lifeExp)
+
+#lets improve this with pipes
+gapcambodia2 <- gap_cambodia %>% 
+  filter(country =="Cambodia") %>% 
+  select(-continent, -lifeExp)
+
+#pipes allows to simplify variables into more concise version
+
+#keyboard shortcut, ctrl, shift, M
+
+
+
+
+```
+the pipe operator will change your life
+
+```{r}
+#this 
+
+gapminder %>% head(3)
+
+#is equivalent to
+
+head(gapminder, 3)
+
+#head shows the top 3 rows
+```
+```{r}
+#mutate() adds new variables
+
+gapminder %>% 
+  mutate(index = 1:nrow(gapminder))
+
+gapminder %>% 
+  mutate(planet = "Earth")
+
+gapminder %>% 
+  mutate(gdp = pop * gdpPercap)
+
+
+
+```
+```{r}
+# find the max gdpPerCap of Egypt and Vietnam. create a new column (one column)
+
+
+gapminder %>% 
+  filter(country %in% c("Egypt", "Vietnam")) %>% 
+  mutate(gdp = pop * gdpPercap) %>% 
+  mutate(max_gdp = max(gdp))
+
+
+  
+  
+```
+
