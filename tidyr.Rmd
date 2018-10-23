@@ -1,0 +1,156 @@
+---
+title: "tidyr"
+author: "Helen Fredricks"
+date: "October 23, 2018"
+output: html_document
+---
+
+TIDYR cleaning datasets - the goal is long data, not wide data... 
+
+```{r}
+## read in gapminder data in wide format
+gap_wide <- readr::read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder_wide.csv')
+```
+
+gather / spread
+
+tidyr::gather()
+
+Gather columns into key-value pairs.
+
+Description
+
+Gather takes multiple columns and collapses into key-value pairs, duplicating all other columns as needed. You use gather() when you notice that you have columns that are not variables.
+
+Usage
+
+gather(data, key = "key", value = "value", ..., na.rm = FALSE,
+  convert = FALSE, factor_key = FALSE)
+
+
+```{r}
+#gap_long the new dataset
+
+gap_long <- gap_wide %>% 
+  gather(key = obstype_year,
+         value = obs_values,
+         -continent, -country)
+
+
+# don't need 
+gap_long <- gap_wide %>% 
+  gather(obstype_year,
+         obs_values,
+         -continent, -country)
+```
+
+seperate
+
+```{r}
+gap_long <- gap_wide %>% 
+  gather(key = obstype_year,
+         value = obs_values,
+         -continent, -country) %>% 
+  separate(col = obstype_year,
+           into = c("obs_type", "year"),
+           sep = "_",
+           convert = TRUE)
+#convert will format numbers if they are numbers, 
+
+# check the structure of the dataframe
+str(gap_long)
+```
+
+plot long data
+
+```{r}
+canada_df <- gap_long %>% 
+  filter(country == "Canada",
+         obs_type == "lifeExp")
+
+ggplot(data = canada_df, aes(x = year, y = obs_values)) +
+  geom_line()
+
+
+```
+
+collect the americas data
+
+```{r}
+life_df <- gap_long %>% 
+  filter(obs_type == "lifeExp",
+         continent == "Americas")
+
+ggplot(data = life_df, aes(x = year, y = obs_values, colour = country)) +
+       geom_line()
+```
+
+7.5 Exercise
+
+    Using gap_long, calculate and plot the the mean life expectancy for each continent over time from 1982 to 2007. Give your plot a title and assign x and y labels. Hint: use the dplyr::group_by() and dplyr::summarise().
+
+ugh, i have no clue
+
+
+```{r}
+byyear <- gap_long %>% 
+  filter(obs_type == "lifeExp",
+         year > 1980) %>%
+  group_by(continent, year) %>% 
+  summarise(mean_LE = mean(obs_values)) %>%  #mean_LE new data frame 
+  ungroup()
+
+
+           
+ggplot(data = byyear, aes(x = year, y = mean_LE, colour = continent)) +
+  geom_line() +
+  labs(x = "Year",
+       y = "Age (Years)",
+       title = "Mean life expectancy") +
+  theme_minimal()
+
+
+
+
+```
+
+spread, turn a long dataset into a wide dataset
+
+
+```{r}
+gap_normal <- gap_long %>% 
+  spread(key = obs_type, ## converting this column
+         value = obs_values) ## creating new columns for each thing in the column to be spread
+```
+
+
+```{r}
+## with summarise or summarize
+
+gap_summarised <- gapminder %>% 
+  group_by(country) %>% 
+  mutate(gdp = pop * gdpPercap) %>% 
+  summarise(max_gdp = max(gdp)) %>% 
+  ungroup () %>% 
+  arrange(max_gdp)
+  
+```
+
+
+
+7.6 Exercise
+
+    Convert “gap_long” all the way back to gap_wide. Hint: you’ll need to create appropriate labels for all our new variables (time*metric combinations) with the opposite of separate: tidyr::unite().
+    
+```{r}
+
+#tidyr::unite()
+
+gap_wideagain <- gap_long %>% 
+  unite(col = var_names, obs_type, year, sep = "_") %>% # var_names a new column combining obs_type & year
+  spread(key = var_names, # then spread
+         value = obs_values)
+
+      
+```
+    
