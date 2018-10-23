@@ -1,0 +1,51 @@
+---
+title: "joining datasets"
+author: "Helen Fredricks"
+date: "October 23, 2018"
+output: html_document
+---
+
+```{r}
+## read in the data. (same URL as yesterday, with co2.csv instead of gapminder.csv)
+co2 <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/co2.csv")
+
+
+##Explore
+co2 %>% head()
+
+co2 %>% dim()
+
+##new variable with noly 2007 data
+gap_2007 <- gapminder %>% 
+  filter(year == 2007)
+View(gap_2007)
+
+## left_join gap_2007 to co2
+lj <- left_join(gap_2007, co2, by = "country")
+
+#piping it
+lj <-  gap_2007 %>% 
+  left_join(co2, by = "country")
+
+
+View(lj)
+
+is.na("co2_2007")
+
+
+## right_join gap_2007 and co2
+rj <- right_join(gap_2007, co2)
+
+## can flip left and right -> co2, gap_2007
+## often left joins are easier to add into a flow of code
+
+
+
+
+
+
+
+
+
+```
+
