@@ -102,4 +102,34 @@ gapminder %>%
   
   
 ```
+```{r}
+gapminder %>%
+  gap_grouped <- group_by(country) %>%
+  mutate(gdp     = pop * gdpPercap,
+         max_gdp = max(gdp)) %>%
+  ungroup() # if you use group_by, also use ungroup() to save heartache later
+```
+
+
+```{r}
+gapminder %>%
+  group_by(country) %>%
+  mutate(gdp     = pop * gdpPercap,
+         max_gdp = max(gdp)) %>%
+  ungroup() %>% 
+  tail(30)
+```
+
+
+```{r}
+## with summarise or summarize
+
+gap_summarised <- gapminder %>% 
+  group_by(country) %>% 
+  mutate(gdp = pop * gdpPercap) %>% 
+  summarise(max_gdp = max(gdp)) %>% 
+  ungroup () %>% 
+  arrange(max_gdp)
+  
+```
 
